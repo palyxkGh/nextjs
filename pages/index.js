@@ -26,7 +26,6 @@ function HomePage() {
         fetch('/api/feedback', {}).then((response) =>
             response.json()
         ).then((data) => {
-                console.log("-> data", data);
                 setFeedBackItems(data.feedback);
             }).then(() => setIsLoading(false))
     }
