@@ -1,4 +1,4 @@
-import {buildFeedbackPath, extractFeedback} from '../api/feedback';
+import {buildFeedbackPath, extractFeedback} from '../api/feedback/feedback';
 import {Fragment, useState} from 'react';
 
 function FeedbackPage(props) {
@@ -6,7 +6,7 @@ function FeedbackPage(props) {
 
     function loadFeedbackHandler(id) {
         console.log("-> id", id);
-    fetch(`/api/${id}`) // /api/some-feedback-id
+    fetch(`/api/feedback/${id}`) // /api/some-feedback-id
         .then(response =>
             response.json()
         )

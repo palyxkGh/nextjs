@@ -1,12 +1,12 @@
 import {buildFeedbackPath, extractFeedback} from "./feedback";
 
 function handler(req, res) {
-    const {feedBackId} = req.query;
+    const {feedbackId} = req.query;
     const filePath = buildFeedbackPath();
     const feedbackData = extractFeedback(filePath);
 
     const selectedFeedBack = feedbackData.find(
-        feedback => feedback.id === feedBackId
+        feedback => feedback.id === feedbackId
     );
     res.status(200).json({feedBack: selectedFeedBack});
 
