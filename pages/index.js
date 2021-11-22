@@ -1,59 +1,34 @@
-import {useRef, useState} from 'react';
+import Head from 'next/head';
 
-function HomePage() {
-    const [feedBackItems, setFeedBackItems] = useState([]);
-    const [isLoading, setIsLoading] = useState(false);
-    const emailInputRef = useRef();
-    const feedbackInputRef = useRef();
+import { getFeaturedEvents } from '../helpers/api-util';
+import EventList from '../components/events/event-list';
+import NewsletterRegistration from '../components/input/newsletter-registration';
 
-    function submitFormHandler(event) {
-        event.preventDefault();
-        const emailData = emailInputRef.current.value;
-        const textData = feedbackInputRef.current.value;
-        const reqBody = {email: emailData, text: textData};
-        fetch('/api/feedback', {
-            method: 'POST',
-            body: JSON.stringify(reqBody),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then((response) => response.json())
-            .then((data) => console.log(data));
-    }
-
-    function loadFeedbackHandler() {
-        setIsLoading(true);
-        fetch('/api/feedback', {}).then((response) =>
-            response.json()
-        ).then((data) => {
-                setFeedBackItems(data.feedback);
-            }).then(() => setIsLoading(false))
-    }
+function HomePage(props) {
   return (
     <div>
-      <h1>The Home Page</h1>
-        <form onSubmit={submitFormHandler}>
-            <div>
-            <label htmlFor="email">Your Email Adress</label>
-            <input type="email" id="label" ref={emailInputRef}/>
-            </div>
-            <div>
-                <label htmlFor="feedback">Your feedback</label>
-                <textarea id="feedback" rows='5' ref={feedbackInputRef}></textarea>
-            </div>
-            <button type={"submit"}>Send Feedback</button>
-        </form>
-        <hr/>
-        <button onClick={loadFeedbackHandler}>Load Feedback</button>
-        <ul>
-            {isLoading ? <span>Data is loading...</span> :
-                feedBackItems && feedBackItems.map(item =>
-                    <li key={item.id}>email: {item.email} item: {item.text} </li>
-                )
-            }
-        </ul>
+      <Head>
+        <title>NextJS Events</title>
+        <meta
+          name='description'
+          content='Find a lot of great events that allow you to evolve...'
+        />
+      </Head>
+      <NewsletterRegistration />
+      <EventList items={props.events} />
     </div>
   );
+}
+
+export async function getStaticProps() {
+  const featuredEvents = await getFeaturedEvents();
+
+  return {
+    props: {
+      events: featuredEvents,
+    },
+    revalidate: 1800,
+  };
 }
 
 export default HomePage;
